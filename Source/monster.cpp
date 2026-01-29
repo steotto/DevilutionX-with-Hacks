@@ -102,6 +102,8 @@
 #include "utils/status_macros.hpp"
 #include "utils/str_cat.hpp"
 
+#include "options.h"
+
 #ifdef _DEBUG
 #include "debug.h"
 #endif
@@ -1023,6 +1025,10 @@ void StartFadein(Monster &monster, Direction md, bool backwards)
 
 void StartFadeout(Monster &monster, Direction md, bool backwards)
 {
+	if (*GetOptions().Hacks.preventMonsterEscape) {
+		return;
+	}
+
 	NewMonsterAnim(monster, MonsterGraphic::Special, md);
 	monster.mode = MonsterMode::FadeOut;
 	monster.position.future = monster.position.tile;
@@ -1914,7 +1920,7 @@ void AiRanged(Monster &monster)
 		if (static_cast<MonsterMode>(monster.var1) == MonsterMode::RangedAttack) {
 			AiDelay(monster, GenerateRnd(20));
 		} else if (monster.distanceToEnemy() < 4) {
-			if (GenerateRnd(100) < 10 * (monster.intelligence + 7))
+			if (GenerateRnd(100) < 10 * (monster.intelligence + 7) && *GetOptions().Hacks.preventMonsterEscape == 0)
 				RandomWalk(monster, Opposite(md));
 		}
 		if (monster.mode == MonsterMode::Stand) {
