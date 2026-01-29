@@ -670,51 +670,53 @@ int RndPL(int param1, int param2)
 
 int CalculateToHitBonus(int level)
 {
+	const bool maximizeBonus = *GetOptions().Hacks.maximizeRandomItemValues;
+
 	// all these calls to RndPL() must not be removed or else invalid items will be generated
 	switch (level) {
 	case -50: {
 		int val = RndPL(6, 10);
-		return *GetOptions().Hacks.maximizeRandomItemValues ? -10 : -val;
+		return maximizeBonus ? -10 : -val;
 	}
 	case -25: {
 		int val = RndPL(1, 5);
-		return *GetOptions().Hacks.maximizeRandomItemValues ? -5 : -val;
+		return maximizeBonus ? -5 : -val;
 	}
 	case 20: {
 		int val = RndPL(1, 5);
-		return *GetOptions().Hacks.maximizeRandomItemValues ? 5 : val;
+		return maximizeBonus ? 5 : val;
 	}
 	case 36: {
 		int val = RndPL(6, 10);
-		return *GetOptions().Hacks.maximizeRandomItemValues ? 10 : val;
+		return maximizeBonus ? 10 : val;
 	}
 	case 51: {
 		int val = RndPL(11, 15);
-		return *GetOptions().Hacks.maximizeRandomItemValues ? 15 : val;
+		return maximizeBonus ? 15 : val;
 	}
 	case 66: {
 		int val = RndPL(16, 20);
-		return *GetOptions().Hacks.maximizeRandomItemValues ? 20 : val;
+		return maximizeBonus ? 20 : val;
 	}
 	case 81: {
 		int val = RndPL(21, 30);
-		return *GetOptions().Hacks.maximizeRandomItemValues ? 30 : val;
+		return maximizeBonus ? 30 : val;
 	}
 	case 96: {
 		int val = RndPL(31, 40);
-		return *GetOptions().Hacks.maximizeRandomItemValues ? 40 : val;
+		return maximizeBonus ? 40 : val;
 	}
 	case 111: {
 		int val = RndPL(41, 50);
-		return *GetOptions().Hacks.maximizeRandomItemValues ? 50 : val;
+		return maximizeBonus ? 50 : val;
 	}
 	case 126: {
 		int val = RndPL(51, 75);
-		return *GetOptions().Hacks.maximizeRandomItemValues ? 75 : val;
+		return maximizeBonus ? 75 : val;
 	}
 	case 151: {
 		int val = RndPL(76, 100);
-		return *GetOptions().Hacks.maximizeRandomItemValues ? 100 : val;
+		return maximizeBonus ? 100 : val;
 	}
 	default:
 		app_fatal("Unknown to hit bonus");

@@ -206,7 +206,7 @@ struct Item {
 	item_equip_type _iLoc = ILOC_NONE;
 	item_class _iClass = ICLASS_NONE;
 	uint8_t _iCurs = 0;
-	int _ivalue = 0;		// ???
+	int _ivalue = 0;		// Item Value in Gold (when selling the item?)
 	int _iIvalue = 0;		// Item Value in Gold
 	uint8_t _iMinDam = 0;	// Minimum Damage
 	uint8_t _iMaxDam = 0;	// Maximum Damage
