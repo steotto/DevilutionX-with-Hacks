@@ -854,6 +854,62 @@ private:
 	std::optional<std::forward_list<ModEntry>> modEntries;
 };
 
+class OptionEntryGriswoldItemType : public OptionEntryListBase {
+public:
+	OptionEntryGriswoldItemType(std::string_view key, OptionEntryFlags flags, const char *name, const char *description);
+
+	void LoadFromIni(std::string_view category) override;
+	void SaveToIni(std::string_view category) const override;
+
+	[[nodiscard]] size_t GetListSize() const override;
+	[[nodiscard]] std::string_view GetListDescription(size_t index) const override;
+	[[nodiscard]] size_t GetActiveListIndex() const override;
+	void SetActiveListIndex(size_t index) override;
+
+	ItemType operator*() const
+	{
+		return itemType_;
+	}
+
+	void SetValue(int value)
+	{
+		if (value >= static_cast<int>(ItemType::Sword) && value <= static_cast<int>(ItemType::Amulet)) {
+			itemType_ = static_cast<ItemType>(value);
+			NotifyValueChanged();
+		}
+	}
+
+private:
+	ItemType itemType_;
+	mutable std::vector<std::pair<ItemType, std::string>> itemTypes;
+
+	void CheckItemTypesAreInitialized() const;
+};
+
+struct HackOptions : OptionCategoryBase {
+	HackOptions();
+
+	std::vector<OptionEntryBase *> GetEntries() override;
+
+	OptionEntryInt<std::uint32_t> expMultiplier;
+
+	OptionEntryInt<std::uint32_t> goldMultiplier;
+	OptionEntryInt<std::uint32_t> maxGoldPerSlot;
+
+	OptionEntryBoolean maximizeRandomItemValues;
+
+	OptionEntryBoolean spawnInTownCenter;
+	OptionEntryBoolean moveTownersToCenter;
+
+	OptionEntryBoolean griswoldUnlimitedItemLevel;
+	OptionEntryBoolean griswoldUnlimitedItemValue;
+	OptionEntryInt<std::uint32_t> griswoldNumberOfItems;
+	OptionEntryGriswoldItemType griswoldItemType;
+	OptionEntryInt<std::uint32_t> griswoldItemLevel;
+	OptionEntryInt<std::uint32_t> griswoldItemMinValue;
+	OptionEntryInt<std::uint32_t> griswoldItemMaxValue;
+};
+
 struct Options {
 	GameModeOptions GameMode;
 	StartUpOptions StartUp;
@@ -869,6 +925,7 @@ struct Options {
 	KeymapperOptions Keymapper;
 	PadmapperOptions Padmapper;
 	ModOptions Mods;
+	HackOptions Hacks;
 
 	[[nodiscard]] std::vector<OptionCategoryBase *> GetCategories()
 	{
@@ -887,6 +944,7 @@ struct Options {
 			&Chat,
 			&Keymapper,
 			&Padmapper,
+			&Hacks,
 		};
 	}
 };

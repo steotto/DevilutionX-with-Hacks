@@ -670,29 +670,52 @@ int RndPL(int param1, int param2)
 
 int CalculateToHitBonus(int level)
 {
+	// all these calls to RndPL() must not be removed or else invalid items will be generated
 	switch (level) {
-	case -50:
-		return -RndPL(6, 10);
-	case -25:
-		return -RndPL(1, 5);
-	case 20:
-		return RndPL(1, 5);
-	case 36:
-		return RndPL(6, 10);
-	case 51:
-		return RndPL(11, 15);
-	case 66:
-		return RndPL(16, 20);
-	case 81:
-		return RndPL(21, 30);
-	case 96:
-		return RndPL(31, 40);
-	case 111:
-		return RndPL(41, 50);
-	case 126:
-		return RndPL(51, 75);
-	case 151:
-		return RndPL(76, 100);
+	case -50: {
+		int val = RndPL(6, 10);
+		return *GetOptions().Hacks.maximizeRandomItemValues ? -10 : -val;
+	}
+	case -25: {
+		int val = RndPL(1, 5);
+		return *GetOptions().Hacks.maximizeRandomItemValues ? -5 : -val;
+	}
+	case 20: {
+		int val = RndPL(1, 5);
+		return *GetOptions().Hacks.maximizeRandomItemValues ? 5 : val;
+	}
+	case 36: {
+		int val = RndPL(6, 10);
+		return *GetOptions().Hacks.maximizeRandomItemValues ? 10 : val;
+	}
+	case 51: {
+		int val = RndPL(11, 15);
+		return *GetOptions().Hacks.maximizeRandomItemValues ? 15 : val;
+	}
+	case 66: {
+		int val = RndPL(16, 20);
+		return *GetOptions().Hacks.maximizeRandomItemValues ? 20 : val;
+	}
+	case 81: {
+		int val = RndPL(21, 30);
+		return *GetOptions().Hacks.maximizeRandomItemValues ? 30 : val;
+	}
+	case 96: {
+		int val = RndPL(31, 40);
+		return *GetOptions().Hacks.maximizeRandomItemValues ? 40 : val;
+	}
+	case 111: {
+		int val = RndPL(41, 50);
+		return *GetOptions().Hacks.maximizeRandomItemValues ? 50 : val;
+	}
+	case 126: {
+		int val = RndPL(51, 75);
+		return *GetOptions().Hacks.maximizeRandomItemValues ? 75 : val;
+	}
+	case 151: {
+		int val = RndPL(76, 100);
+		return *GetOptions().Hacks.maximizeRandomItemValues ? 100 : val;
+	}
 	default:
 		app_fatal("Unknown to hit bonus");
 	}
@@ -700,7 +723,11 @@ int CalculateToHitBonus(int level)
 
 int SaveItemPower(const Player &player, Item &item, ItemPower &power)
 {
-	int r = RndPL(power.param1, power.param2);
+	int r = RndPL(power.param1, power.param2); // DON'T TOUCH THIS LINE, or else you get invalid items
+
+	if (*GetOptions().Hacks.maximizeRandomItemValues) {
+		r = power.param2;
+	}
 
 	switch (power.type) {
 	case IPL_TOHIT:
@@ -719,7 +746,12 @@ int SaveItemPower(const Player &player, Item &item, ItemPower &power)
 		item._iDamAcFlags |= ItemSpecialEffectHf::Doppelganger;
 		[[fallthrough]];
 	case IPL_TOHIT_DAMP:
-		r = RndPL(power.param1, power.param2);
+		r = RndPL(power.param1, power.param2); // DON'T TOUCH THIS LINE, or else you get invalid items
+
+		if (*GetOptions().Hacks.maximizeRandomItemValues) {
+			r = power.param2;
+		}
+
 		item._iPLDam += static_cast<int16_t>(r);
 		item._iPLToHit += CalculateToHitBonus(power.param1);
 		break;
@@ -1938,6 +1970,19 @@ _item_indexes RndPremiumItem(const Player &player, int minlvl, int maxlvl)
 
 void SpawnOnePremium(Item &premiumItem, int plvl, const Player &player)
 {
+	if (*GetOptions().Hacks.griswoldItemLevel > 0) {
+		plvl = *GetOptions().Hacks.griswoldItemLevel;
+	} else if (*GetOptions().Hacks.griswoldUnlimitedItemLevel) {
+		plvl = std::clamp(plvl, 1, 60);
+	} else {
+		plvl = std::clamp(plvl, 1, 30);
+	}
+
+	const ItemType enforcedItemType = *GetOptions().Hacks.griswoldItemType;
+
+	const int minItemValue = *GetOptions().Hacks.griswoldItemMinValue;
+	const int maxItemValue = *GetOptions().Hacks.griswoldItemMaxValue;
+
 	int strength = std::max(player.GetMaximumAttributeValue(CharacterAttribute::Strength), player._pStrength);
 	int dexterity = std::max(player.GetMaximumAttributeValue(CharacterAttribute::Dexterity), player._pDexterity);
 	int magic = std::max(player.GetMaximumAttributeValue(CharacterAttribute::Magic), player._pMagic);
@@ -1945,20 +1990,30 @@ void SpawnOnePremium(Item &premiumItem, int plvl, const Player &player)
 	dexterity += dexterity / 5;
 	magic += magic / 5;
 
-	plvl = std::clamp(plvl, 1, 30);
+	// plvl = std::clamp(plvl, 1, 30);
 
-	const int maxCount = 150;
+	const int maxCount = 500;
 	const bool unlimited = !gbIsHellfire; // TODO: This could lead to an infinite loop if a suitable item can never be generated
 	for (int count = 0; unlimited || count < maxCount; count++) {
 		premiumItem = {};
 		premiumItem._iSeed = AdvanceRndSeed();
 		SetRndSeed(premiumItem._iSeed);
-		const _item_indexes itemType = RndPremiumItem(player, plvl / 4, plvl);
+		const _item_indexes itemType = RndPremiumItem(player, plvl / 4, plvl); // DON'T TOUCH THIS LINE, or else you get white or invalid items
 		GetItemAttrs(premiumItem, itemType, plvl);
-		GetItemBonus(player, premiumItem, plvl / 2, plvl, true, !gbIsHellfire);
+		GetItemBonus(player, premiumItem, plvl / 2, plvl, true, !gbIsHellfire); // DON'T TOUCH THIS LINE, or else you get white or invalid items
+
+		if (enforcedItemType != ItemType::None && premiumItem._itype != enforcedItemType) {
+			continue;
+		}
+		if (minItemValue > 0 && premiumItem._iIvalue < minItemValue) {
+			continue;
+		}
+		if (maxItemValue > 0 && premiumItem._iIvalue > maxItemValue) {
+			continue;
+		}
 
 		if (!gbIsHellfire) {
-			if (premiumItem._iIvalue <= MaxVendorValue) {
+			if (premiumItem._iIvalue <= MaxVendorValue || *GetOptions().Hacks.griswoldUnlimitedItemValue) {
 				break;
 			}
 		} else {
@@ -1995,11 +2050,12 @@ void SpawnOnePremium(Item &premiumItem, int plvl, const Player &player)
 				break;
 			}
 			itemValue = itemValue * 4 / 5; // avoids forced int > float > int conversion
-			if (premiumItem._iIvalue <= MaxVendorValueHf
+			if ((premiumItem._iIvalue <= MaxVendorValueHf || *GetOptions().Hacks.griswoldUnlimitedItemValue)
+				// item requirements need to roughly match the player stats
 			    && premiumItem._iMinStr <= strength
 			    && premiumItem._iMinMag <= magic
 			    && premiumItem._iMinDex <= dexterity
-			    && premiumItem._iIvalue >= itemValue) {
+			    && (premiumItem._iIvalue >= itemValue || minItemValue > 0 || maxItemValue > 0)) {
 				break;
 			}
 		}
@@ -3125,7 +3181,10 @@ void GetItemAttrs(Item &item, _item_indexes itemData, int lvl)
 	item._iClass = baseItemData.iClass;
 	item._iMinDam = baseItemData.iMinDam;
 	item._iMaxDam = baseItemData.iMaxDam;
-	item._iAC = baseItemData.iMinAC + GenerateRnd(baseItemData.iMaxAC - baseItemData.iMinAC + 1);
+	item._iAC = baseItemData.iMinAC + GenerateRnd(baseItemData.iMaxAC - baseItemData.iMinAC + 1); // DON'T TOUCH THIS LINE, or else you get invalid items
+	if (*GetOptions().Hacks.maximizeRandomItemValues) {
+		item._iAC = baseItemData.iMaxAC;
+	}
 	item._iFlags = baseItemData.iFlags;
 	item._iMiscId = baseItemData.iMiscId;
 	item._iSpell = baseItemData.iSpell;
@@ -3168,6 +3227,7 @@ void GetItemAttrs(Item &item, _item_indexes itemData, int lvl)
 	if (leveltype == DTYPE_HELL)
 		rndv += rndv / 8;
 
+	rndv *= *GetOptions().Hacks.goldMultiplier;
 	item._ivalue = std::min(rndv, GOLD_MAX_LIMIT);
 	SetPlrHandGoldCurs(item);
 }
@@ -4414,26 +4474,31 @@ void SpawnSmith(int lvl)
 
 void ReplacePremium(const Player &player, int idx)
 {
-	int plvl = gbIsHellfire ? itemLevelAddHf[idx] : itemLevelAdd[idx];
-	plvl += player.getCharacterLevel();
+	// int plvl = gbIsHellfire ? itemLevelAddHf[idx] : itemLevelAdd[idx];
+	// plvl += player.getCharacterLevel();
+	int plvl = player.getCharacterLevel();
 	SpawnOnePremium(PremiumItems[idx], plvl, player);
 }
 
 void SpawnPremium(const Player &player)
 {
 	const int lvl = player.getCharacterLevel();
-	const size_t maxItems = gbIsHellfire ? NumSmithItemsHf : NumSmithItems;
+	const size_t maxItems = *GetOptions().Hacks.griswoldNumberOfItems;
 
 	while (PremiumItems.size() < maxItems) {
-		int plvl = PremiumItemLevel + (gbIsHellfire ? itemLevelAddHf[PremiumItems.size()] : itemLevelAdd[PremiumItems.size()]);
+		// int plvl = PremiumItemLevel + (gbIsHellfire ? itemLevelAddHf[PremiumItems.size()] : itemLevelAdd[PremiumItems.size()]); // PremiumItemLevel is 1 when creating a new game
+		int plvl = player.getCharacterLevel();
 		Item item = {};
 		SpawnOnePremium(item, plvl, player);
 		PremiumItems.push_back(item);
 	}
 
+	// Upgrade premium items if the player's level is higher than the current premium item level (which gets persisted in save files)
 	while (PremiumItemLevel < lvl) {
 		PremiumItemLevel++;
 		Item *ptr = PremiumItems.begin();
+
+		// Move items to make space for new ones
 		if (gbIsHellfire) {
 			std::move(ptr + 3, ptr + 13, ptr);
 			PremiumItems[11] = PremiumItems[13];
@@ -4959,11 +5024,13 @@ bool ApplyOilToItem(Item &item, Player &player)
 	case IMISC_OILACC:
 		if (item._iPLToHit < 50) {
 			item._iPLToHit += RandomIntBetween(1, 2);
+			item._iPLToHit = std::clamp(static_cast<int>(item._iPLToHit), 0, 50);
 		}
 		break;
 	case IMISC_OILMAST:
 		if (item._iPLToHit < 100) {
 			item._iPLToHit += RandomIntBetween(3, 5);
+			item._iPLToHit = std::clamp(static_cast<int>(item._iPLToHit), 0, 100);
 		}
 		break;
 	case IMISC_OILSHARP:
@@ -5011,11 +5078,13 @@ bool ApplyOilToItem(Item &item, Player &player)
 	case IMISC_OILHARD:
 		if (item._iAC < 60) {
 			item._iAC += RandomIntBetween(1, 2);
+			item._iAC = std::clamp(static_cast<int>(item._iAC), 0, 60);
 		}
 		break;
 	case IMISC_OILIMP:
 		if (item._iAC < 120) {
 			item._iAC += RandomIntBetween(3, 5);
+			item._iAC = std::clamp(static_cast<int>(item._iAC), 0, 120);
 		}
 		break;
 	default:

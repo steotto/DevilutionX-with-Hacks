@@ -22,7 +22,7 @@ constexpr int NumSmithBasicItems = 19;
 constexpr int NumSmithBasicItemsHf = 24;
 
 constexpr int NumSmithItems = 6;
-constexpr int NumSmithItemsHf = 15;
+constexpr int NumSmithItemsHf = 200;
 
 constexpr int NumHealerItems = 17;
 constexpr int NumHealerItemsHf = 19;

@@ -407,6 +407,11 @@ void SetupLocalPositions()
 	Player &myPlayer = *MyPlayer;
 
 	myPlayer.position.tile = spawns[MyPlayerId];
+
+	if (MyPlayerId == 0 && *GetOptions().Hacks.spawnInTownCenter) {
+		myPlayer.position.tile = { 62, 65 };
+	}
+
 	myPlayer.position.future = myPlayer.position.tile;
 	myPlayer.setLevel(currlevel);
 	myPlayer._pLvlChanging = true;

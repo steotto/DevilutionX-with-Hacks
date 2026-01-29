@@ -26,7 +26,7 @@ namespace devilution {
 
 #define GOLD_SMALL_LIMIT 1000
 #define GOLD_MEDIUM_LIMIT 2500
-#define GOLD_MAX_LIMIT 5000
+#define GOLD_MAX_LIMIT 500000
 
 // Item indestructible durability
 #define DUR_INDESTRUCTIBLE 255
@@ -206,11 +206,11 @@ struct Item {
 	item_equip_type _iLoc = ILOC_NONE;
 	item_class _iClass = ICLASS_NONE;
 	uint8_t _iCurs = 0;
-	int _ivalue = 0;
-	int _iIvalue = 0;
-	uint8_t _iMinDam = 0;
-	uint8_t _iMaxDam = 0;
-	int16_t _iAC = 0;
+	int _ivalue = 0;		// ???
+	int _iIvalue = 0;		// Item Value in Gold
+	uint8_t _iMinDam = 0;	// Minimum Damage
+	uint8_t _iMaxDam = 0;	// Maximum Damage
+	int16_t _iAC = 0;		// Armor Class
 	ItemSpecialEffect _iFlags = ItemSpecialEffect::None;
 	item_misc_id _iMiscId = IMISC_NONE;
 	SpellID _iSpell = SpellID::Null;
@@ -219,29 +219,29 @@ struct Item {
 	int _iMaxCharges = 0;
 	int _iDurability = 0;
 	int _iMaxDur = 0;
-	int16_t _iPLDam = 0;
-	int16_t _iPLToHit = 0;
-	int16_t _iPLAC = 0;
-	int16_t _iPLStr = 0;
-	int16_t _iPLMag = 0;
-	int16_t _iPLDex = 0;
-	int16_t _iPLVit = 0;
-	int16_t _iPLFR = 0;
-	int16_t _iPLLR = 0;
-	int16_t _iPLMR = 0;
-	int16_t _iPLMana = 0;
-	int16_t _iPLHP = 0;
+	int16_t _iPLDam = 0;	// Damage Bonus
+	int16_t _iPLToHit = 0;	// To Hit Bonus
+	int16_t _iPLAC = 0;		// AC Bonus
+	int16_t _iPLStr = 0;	// Strength Bonus
+	int16_t _iPLMag = 0;	// Magic Bonus
+	int16_t _iPLDex = 0;	// Dexterity Bonus
+	int16_t _iPLVit = 0;	// Vitality Bonus
+	int16_t _iPLFR = 0;		// Fire Resistance Bonus
+	int16_t _iPLLR = 0;		// Lightning Resistance Bonus
+	int16_t _iPLMR = 0;		// Magic Resistance Bonus
+	int16_t _iPLMana = 0;	// Mana Bonus
+	int16_t _iPLHP = 0;		// Life Bonus
 	int16_t _iPLDamMod = 0;
 	int16_t _iPLGetHit = 0;
-	int16_t _iPLLight = 0;
-	int8_t _iSplLvlAdd = 0;
+	int16_t _iPLLight = 0;	// Light Radius Bonus
+	int8_t _iSplLvlAdd = 0;	// Spell Level Bonus
 	bool _iRequest = false;
 	/** Unique item ID, used as an index into UniqueItemList */
 	int _iUid = 0;
-	int16_t _iFMinDam = 0;
-	int16_t _iFMaxDam = 0;
-	int16_t _iLMinDam = 0;
-	int16_t _iLMaxDam = 0;
+	int16_t _iFMinDam = 0;	// Fire Minimum Damage
+	int16_t _iFMaxDam = 0;	// Fire Maximum Damage
+	int16_t _iLMinDam = 0;	// Lightning Minimum Damage
+	int16_t _iLMaxDam = 0;	// Lightning Maximum Damage
 	int16_t _iPLEnAc = 0;
 	enum item_effect_type _iPrePower = IPL_INVALID;
 	enum item_effect_type _iSufPower = IPL_INVALID;

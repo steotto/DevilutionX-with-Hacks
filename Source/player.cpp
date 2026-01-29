@@ -2444,6 +2444,8 @@ void Player::_addExperience(uint32_t experience, int levelDelta)
 
 	LuaEvent("OnPlayerGainExperience", this, clampedExp);
 
+	clampedExp *= *GetOptions().Hacks.expMultiplier;
+
 	const uint32_t maxExperience = GetNextExperienceThresholdForLevel(getMaxCharacterLevel());
 
 	// ensure we only add enough experience to reach the max experience cap so we don't overflow

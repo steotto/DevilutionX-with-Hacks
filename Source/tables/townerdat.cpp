@@ -17,6 +17,8 @@
 #include "data/file.hpp"
 #include "data/record_reader.hpp"
 
+#include "options.h"
+
 namespace devilution {
 
 std::vector<TownerDataEntry> TownersDataEntries;
@@ -112,6 +114,15 @@ void LoadTownersFromFile()
 		reader.readString("name", entry.name);
 		reader.readInt("position_x", entry.position.x);
 		reader.readInt("position_y", entry.position.y);
+
+		if (*GetOptions().Hacks.moveTownersToCenter && entry.type == TOWN_WITCH) {
+			entry.position.x = 57;
+			entry.position.y = 60;
+		} else if (*GetOptions().Hacks.moveTownersToCenter && entry.type == TOWN_PEGBOY) {
+			entry.position.x = 60;
+			entry.position.y = 68;
+		}
+
 		reader.read("direction", entry.direction, ParseEnum<Direction>);
 		reader.readInt("animWidth", entry.animWidth);
 		reader.readString("animPath", entry.animPath);
