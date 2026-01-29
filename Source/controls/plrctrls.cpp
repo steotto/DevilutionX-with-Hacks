@@ -514,27 +514,27 @@ void InteractMonster()
 			return;
 		}
 		NetSendCmdParam1(true, CMD_ATTACKID, pcursmonst);
-		LastMouseButtonAction = MouseActionType::AttackMonsterTarget;
+		LastPlayerAction = PlayerActionType::AttackMonsterTarget;
 		return;
 	}
 
 	// shoot
 	if (myPlayer.UsesRangedWeapon()) {
 		NetSendCmdParam1(true, CMD_RATTACKID, pcursmonst);
-		LastMouseButtonAction = MouseActionType::AttackMonsterTarget;
+		LastPlayerAction = PlayerActionType::AttackMonsterTarget;
 		return;
 	}
 
 	// attack
 	if (near) {
 		NetSendCmdParam1(true, CMD_ATTACKID, pcursmonst);
-		LastMouseButtonAction = MouseActionType::AttackMonsterTarget;
+		LastPlayerAction = PlayerActionType::AttackMonsterTarget;
 		return;
 	}
 
 	// mock attack
 	NetSendCmdLoc(MyPlayerId, true, CMD_SATTACKXY, position);
-	LastMouseButtonAction = MouseActionType::Attack;
+	LastPlayerAction = PlayerActionType::Attack;
 }
 
 void InteractPlayer()
@@ -546,20 +546,20 @@ void InteractPlayer()
 	// shoot
 	if (myPlayer.UsesRangedWeapon()) {
 		NetSendCmdParam1(true, CMD_RATTACKPID, PlayerUnderCursor->getId());
-		LastMouseButtonAction = MouseActionType::AttackPlayerTarget;
+		LastPlayerAction = PlayerActionType::AttackPlayerTarget;
 		return;
 	}
 
 	// attack
 	if (GetMinDistance(position) < 2) {
 		NetSendCmdParam1(true, CMD_ATTACKPID, PlayerUnderCursor->getId());
-		LastMouseButtonAction = MouseActionType::AttackPlayerTarget;
+		LastPlayerAction = PlayerActionType::AttackPlayerTarget;
 		return;
 	}
 
 	// mock attack
 	NetSendCmdLoc(MyPlayerId, true, CMD_SATTACKXY, position);
-	LastMouseButtonAction = MouseActionType::Attack;
+	LastPlayerAction = PlayerActionType::Attack;
 }
 
 void Interact()
@@ -597,7 +597,7 @@ void Interact()
 		Point position = myPlayer.position.tile + pdir;
 
 		NetSendCmdLoc(MyPlayerId, true, myPlayer.UsesRangedWeapon() ? CMD_RATTACKXY : CMD_SATTACKXY, position);
-		LastMouseButtonAction = MouseActionType::Attack;
+		LastPlayerAction = PlayerActionType::Attack;
 		return;
 	}
 }

@@ -207,6 +207,38 @@ void ProcessControllerMotion(const SDL_Event &event)
 	}
 }
 
+AxisDirection GetAnalogStickDirection(float stickX, float stickY)
+{
+	const float magnitude = std::sqrt(stickX * stickX + stickY * stickY);
+	if (magnitude < StickDirectionThreshold)
+		return { AxisDirectionX_NONE, AxisDirectionY_NONE };
+
+	const float absX = std::fabs(stickX);
+	const float absY = std::fabs(stickY);
+	AxisDirection result { AxisDirectionX_NONE, AxisDirectionY_NONE };
+
+	// 8-way sectoring with 22.5° cutoffs.
+	constexpr float DiagonalCutoff = 0.41421356F; // tan(22.5°)
+	if (absX == 0.0F) {
+		result.y = stickY > 0 ? AxisDirectionY_UP : AxisDirectionY_DOWN;
+		return result;
+	}
+
+	const float ratio = absY / absX;
+	if (ratio <= DiagonalCutoff) {
+		result.x = stickX > 0 ? AxisDirectionX_RIGHT : AxisDirectionX_LEFT;
+		return result;
+	}
+	if (ratio >= 1.0F / DiagonalCutoff) {
+		result.y = stickY > 0 ? AxisDirectionY_UP : AxisDirectionY_DOWN;
+		return result;
+	}
+
+	result.x = stickX > 0 ? AxisDirectionX_RIGHT : AxisDirectionX_LEFT;
+	result.y = stickY > 0 ? AxisDirectionY_UP : AxisDirectionY_DOWN;
+	return result;
+}
+
 AxisDirection GetLeftStickOrDpadDirection(bool usePadmapper)
 {
 	const float stickX = leftStickX;
@@ -253,38 +285,6 @@ AxisDirection GetLeftStickOrDpadDirection(bool usePadmapper)
 		result.x = AxisDirectionX_RIGHT;
 	}
 
-	return result;
-}
-
-AxisDirection GetAnalogStickDirection(float stickX, float stickY)
-{
-	const float magnitude = std::sqrt(stickX * stickX + stickY * stickY);
-	if (magnitude < StickDirectionThreshold)
-		return { AxisDirectionX_NONE, AxisDirectionY_NONE };
-
-	const float absX = std::fabs(stickX);
-	const float absY = std::fabs(stickY);
-	AxisDirection result { AxisDirectionX_NONE, AxisDirectionY_NONE };
-
-	// 8-way sectoring with 22.5° cutoffs.
-	constexpr float DiagonalCutoff = 0.41421356F; // tan(22.5°)
-	if (absX == 0.0F) {
-		result.y = stickY > 0 ? AxisDirectionY_UP : AxisDirectionY_DOWN;
-		return result;
-	}
-
-	const float ratio = absY / absX;
-	if (ratio <= DiagonalCutoff) {
-		result.x = stickX > 0 ? AxisDirectionX_RIGHT : AxisDirectionX_LEFT;
-		return result;
-	}
-	if (ratio >= 1.0F / DiagonalCutoff) {
-		result.y = stickY > 0 ? AxisDirectionY_UP : AxisDirectionY_DOWN;
-		return result;
-	}
-
-	result.x = stickX > 0 ? AxisDirectionX_RIGHT : AxisDirectionX_LEFT;
-	result.y = stickY > 0 ? AxisDirectionY_UP : AxisDirectionY_DOWN;
 	return result;
 }
 
