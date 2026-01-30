@@ -1740,7 +1740,7 @@ HackOptions::HackOptions()
 	, griswoldUnlimitedItemValue("Griswold Unlimited Item Value", OptionEntryFlags::None, N_("Griswold Unlimited Item Value"), "Allow Griswold to sell items above his maximum gold value", true)
 	, griswoldNumberOfItems("Griswold Number of Items", OptionEntryFlags::None, N_("Griswold Number of Items"), "Set the number of premium items that Griswold sells", 50, { 6, 16, 25, 50, 100, 200 })
 	, griswoldItemType("Griswold Item Type", OptionEntryFlags::None, N_("Griswold Item Type"), N_("Try to generate Griswold items of this specific type only"))
-	, griswoldItemLevel("Griswold Item Level", OptionEntryFlags::None, N_("Griswold Item Level"), "Set the level of items that Griswold sells, 0 = disabled", 0, { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60 })
+	, griswoldFixedItemLevel("Griswold Fixed Item Level", OptionEntryFlags::None, N_("Griswold Fixed Item Level"), "Set a fixed level for all items that Griswold sells, 0 = disabled", 0, { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60 })
 	, griswoldItemValueMin("Griswold Item Min Gold Value", OptionEntryFlags::None, N_("Griswold Item Min Gold Value"), "Set the minimum gold value of items that Griswold sells, 0 = disabled (need to set this directly in diablo.ini)", 0)
 	, griswoldItemValueMax("Griswold Item Max Gold Value", OptionEntryFlags::None, N_("Griswold Item Max Gold Value"), "Set the maximum gold value of items that Griswold sells, 0 = disabled (need to set this directly in diablo.ini)", 0)
 {
@@ -1759,7 +1759,7 @@ std::vector<OptionEntryBase *> HackOptions::GetEntries()
 		&griswoldUnlimitedItemValue,
 		&griswoldNumberOfItems,
 		&griswoldItemType,
-		&griswoldItemLevel,
+		&griswoldFixedItemLevel,
 		&griswoldItemValueMin,
 		&griswoldItemValueMax,
 	};

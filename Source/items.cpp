@@ -1972,8 +1972,8 @@ _item_indexes RndPremiumItem(const Player &player, int minlvl, int maxlvl)
 
 void SpawnOnePremium(Item &premiumItem, int plvl, const Player &player)
 {
-	if (*GetOptions().Hacks.griswoldItemLevel > 0) {
-		plvl = *GetOptions().Hacks.griswoldItemLevel;
+	if (*GetOptions().Hacks.griswoldFixedItemLevel > 0) {
+		plvl = *GetOptions().Hacks.griswoldFixedItemLevel;
 	} else if (*GetOptions().Hacks.griswoldUnlimitedItemLevel) {
 		plvl = std::clamp(plvl, 1, 60);
 	} else {

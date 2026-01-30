@@ -907,7 +907,7 @@ struct HackOptions : OptionCategoryBase {
 	OptionEntryBoolean griswoldUnlimitedItemValue;
 	OptionEntryInt<std::uint32_t> griswoldNumberOfItems;
 	OptionEntryGriswoldItemType griswoldItemType;
-	OptionEntryInt<std::uint32_t> griswoldItemLevel;
+	OptionEntryInt<std::uint32_t> griswoldFixedItemLevel;
 	OptionEntryInt<std::uint32_t> griswoldItemValueMin;
 	OptionEntryInt<std::uint32_t> griswoldItemValueMax;
 };
