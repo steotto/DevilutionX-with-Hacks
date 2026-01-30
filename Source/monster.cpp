@@ -1012,6 +1012,10 @@ void StartDeathFromMonster(Monster &attacker, Monster &target)
 
 void StartFadein(Monster &monster, Direction md, bool backwards)
 {
+	if (*GetOptions().Hacks.preventMonsterEscape) {
+		return;
+	}
+
 	NewMonsterAnim(monster, MonsterGraphic::Special, md);
 	monster.mode = MonsterMode::FadeIn;
 	monster.position.future = monster.position.tile;

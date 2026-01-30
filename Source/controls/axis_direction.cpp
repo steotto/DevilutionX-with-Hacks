@@ -8,25 +8,26 @@
 
 namespace devilution {
 
-bool AxisDirectionRepeater::AllowRepeat(int &lastPrimary, int &lastOpposite, int now)
+namespace {
+bool AllowDirectionRepeat(int now, int minDelayMs, int minIntervalMs, int &pressTime, int &lastRepeatTime)
 {
-	lastOpposite = 0;
-	if (lastPrimary == 0) {
-		// Negative value marks the initial press timestamp for the first-repeat delay
-		lastPrimary = -now;
+	if (pressTime == 0) {
+		pressTime = now;
+		lastRepeatTime = 0;
 		return true;
 	}
-	if (lastPrimary < 0) {
-		if (now + lastPrimary < min_delay_ms_)
+	if (lastRepeatTime == 0) {
+		if (now - pressTime < minDelayMs)
 			return false;
-		lastPrimary = now;
+		lastRepeatTime = now;
 		return true;
 	}
-	if (now - lastPrimary < min_interval_ms_)
+	if (now - lastRepeatTime < minIntervalMs)
 		return false;
-	lastPrimary = now;
+	lastRepeatTime = now;
 	return true;
 }
+} // namespace
 
 AxisDirection AxisDirectionRepeater::Get(AxisDirection axisDirection)
 {
@@ -34,29 +35,43 @@ AxisDirection AxisDirectionRepeater::Get(AxisDirection axisDirection)
 
 	switch (axisDirection.x) {
 	case AxisDirectionX_LEFT:
-		if (!AllowRepeat(last_left_, last_right_, now))
+		last_press_right_ = 0;
+		last_repeat_right_ = 0;
+		if (!AllowDirectionRepeat(now, min_delay_ms_, min_interval_ms_, last_press_left_, last_repeat_left_))
 			axisDirection.x = AxisDirectionX_NONE;
 		break;
 	case AxisDirectionX_RIGHT:
-		if (!AllowRepeat(last_right_, last_left_, now))
+		last_press_left_ = 0;
+		last_repeat_left_ = 0;
+		if (!AllowDirectionRepeat(now, min_delay_ms_, min_interval_ms_, last_press_right_, last_repeat_right_))
 			axisDirection.x = AxisDirectionX_NONE;
 		break;
 	case AxisDirectionX_NONE:
-		last_left_ = last_right_ = 0;
+		last_press_left_ = 0;
+		last_repeat_left_ = 0;
+		last_press_right_ = 0;
+		last_repeat_right_ = 0;
 		break;
 	}
 
 	switch (axisDirection.y) {
 	case AxisDirectionY_UP:
-		if (!AllowRepeat(last_up_, last_down_, now))
+		last_press_down_ = 0;
+		last_repeat_down_ = 0;
+		if (!AllowDirectionRepeat(now, min_delay_ms_, min_interval_ms_, last_press_up_, last_repeat_up_))
 			axisDirection.y = AxisDirectionY_NONE;
 		break;
 	case AxisDirectionY_DOWN:
-		if (!AllowRepeat(last_down_, last_up_, now))
+		last_press_up_ = 0;
+		last_repeat_up_ = 0;
+		if (!AllowDirectionRepeat(now, min_delay_ms_, min_interval_ms_, last_press_down_, last_repeat_down_))
 			axisDirection.y = AxisDirectionY_NONE;
 		break;
 	case AxisDirectionY_NONE:
-		last_up_ = last_down_ = 0;
+		last_press_up_ = 0;
+		last_repeat_up_ = 0;
+		last_press_down_ = 0;
+		last_repeat_down_ = 0;
 		break;
 	}
 
