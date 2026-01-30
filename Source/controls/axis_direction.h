@@ -29,10 +29,14 @@ struct AxisDirection {
 class AxisDirectionRepeater {
 public:
 	AxisDirectionRepeater(int min_delay_ms_ = 300, int min_interval_ms_ = 150)
-	    : last_left_(0)
-	    , last_right_(0)
-	    , last_up_(0)
-	    , last_down_(0)
+	    : last_press_left_(0)
+	    , last_repeat_left_(0)
+	    , last_press_right_(0)
+	    , last_repeat_right_(0)
+	    , last_press_up_(0)
+	    , last_repeat_up_(0)
+	    , last_press_down_(0)
+	    , last_repeat_down_(0)
 	    , min_delay_ms_(min_delay_ms_)
 	    , min_interval_ms_(min_interval_ms_)
 	{
@@ -41,12 +45,14 @@ public:
 	AxisDirection Get(AxisDirection axisDirection);
 
 private:
-	bool AllowRepeat(int &lastPrimary, int &lastOpposite, int now);
-
-	int last_left_;
-	int last_right_;
-	int last_up_;
-	int last_down_;
+	int last_press_left_;
+	int last_repeat_left_;
+	int last_press_right_;
+	int last_repeat_right_;
+	int last_press_up_;
+	int last_repeat_up_;
+	int last_press_down_;
+	int last_repeat_down_;
 	int min_delay_ms_;
 	int min_interval_ms_;
 };
