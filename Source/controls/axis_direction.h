@@ -41,6 +41,8 @@ public:
 	AxisDirection Get(AxisDirection axisDirection);
 
 private:
+	bool AllowRepeat(int &lastPrimary, int &lastOpposite, int now);
+
 	int last_left_;
 	int last_right_;
 	int last_up_;
