@@ -1992,8 +1992,6 @@ void SpawnOnePremium(Item &premiumItem, int plvl, const Player &player)
 	dexterity += dexterity / 5;
 	magic += magic / 5;
 
-	// plvl = std::clamp(plvl, 1, 30);
-
 	const int maxCount = 500;
 	const bool unlimited = !gbIsHellfire; // TODO: This could lead to an infinite loop if a suitable item can never be generated
 	for (int count = 0; unlimited || count < maxCount; count++) {
@@ -4476,8 +4474,6 @@ void SpawnSmith(int lvl)
 
 void ReplacePremium(const Player &player, int idx)
 {
-	// int plvl = gbIsHellfire ? itemLevelAddHf[idx] : itemLevelAdd[idx];
-	// plvl += player.getCharacterLevel();
 	int plvl = player.getCharacterLevel();
 	SpawnOnePremium(PremiumItems[idx], plvl, player);
 }
@@ -4488,31 +4484,23 @@ void SpawnPremium(const Player &player)
 	const size_t maxItems = *GetOptions().Hacks.griswoldNumberOfItems;
 
 	while (PremiumItems.size() < maxItems) {
-		// int plvl = PremiumItemLevel + (gbIsHellfire ? itemLevelAddHf[PremiumItems.size()] : itemLevelAdd[PremiumItems.size()]); // PremiumItemLevel is 1 when creating a new game
 		int plvl = player.getCharacterLevel();
 		Item item = {};
 		SpawnOnePremium(item, plvl, player);
 		PremiumItems.push_back(item);
 	}
 
-	// Upgrade premium items if the player's level is higher than the current premium item level (which gets persisted in save files)
+	// Upgrade premium items if the player's level is higher than the current premium item level (which gets persisted in save files).
+	// The upgrade rotates through thirds each level-up: positions 1/4/7…, then 2/5/8…, then 3/6/9…, then repeats.
 	while (PremiumItemLevel < lvl) {
 		PremiumItemLevel++;
-		Item *ptr = PremiumItems.begin();
+		const size_t count = PremiumItems.size();
+		if (count == 0)
+			continue;
 
-		// Move items to make space for new ones
-		if (gbIsHellfire) {
-			std::move(ptr + 3, ptr + 13, ptr);
-			PremiumItems[11] = PremiumItems[13];
-			PremiumItems[13] = PremiumItems[14];
-			SpawnOnePremium(PremiumItems[10], PremiumItemLevel + itemLevelAddHf[10], player);
-			SpawnOnePremium(PremiumItems[12], PremiumItemLevel + itemLevelAddHf[12], player);
-			SpawnOnePremium(PremiumItems[14], PremiumItemLevel + itemLevelAddHf[14], player);
-		} else {
-			std::move(ptr + 2, ptr + 5, ptr);
-			PremiumItems[4] = PremiumItems[5];
-			SpawnOnePremium(PremiumItems[3], PremiumItemLevel + itemLevelAdd[3], player);
-			SpawnOnePremium(PremiumItems[5], PremiumItemLevel + itemLevelAdd[5], player);
+		const size_t offset = static_cast<size_t>((PremiumItemLevel + 1) % 3);
+		for (size_t i = offset; i < count; i += 3) {
+			SpawnOnePremium(PremiumItems[i], PremiumItemLevel, player);
 		}
 	}
 }

@@ -1210,7 +1210,7 @@ void InventoryMove(AxisDirection dir)
  */
 void CheckInventoryMove(AxisDirection dir)
 {
-	static AxisDirectionRepeater repeater(/*min_interval_ms=*/150);
+	static AxisDirectionRepeater repeater;
 	dir = repeater.Get(dir);
 	if (dir.x == AxisDirectionX_NONE && dir.y == AxisDirectionY_NONE)
 		return;
@@ -1242,7 +1242,7 @@ bool BlurInventory()
 
 void StashMove(AxisDirection dir)
 {
-	static AxisDirectionRepeater repeater(/*min_interval_ms=*/150);
+	static AxisDirectionRepeater repeater;
 	dir = repeater.Get(dir);
 	if (dir.x == AxisDirectionX_NONE && dir.y == AxisDirectionY_NONE)
 		return;
