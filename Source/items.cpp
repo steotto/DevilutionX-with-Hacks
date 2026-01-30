@@ -1982,8 +1982,8 @@ void SpawnOnePremium(Item &premiumItem, int plvl, const Player &player)
 
 	const ItemType enforcedItemType = *GetOptions().Hacks.griswoldItemType;
 
-	const int minItemValue = *GetOptions().Hacks.griswoldItemMinValue;
-	const int maxItemValue = *GetOptions().Hacks.griswoldItemMaxValue;
+	const int minItemValue = *GetOptions().Hacks.griswoldItemValueMin;
+	const int maxItemValue = *GetOptions().Hacks.griswoldItemValueMax;
 
 	int strength = std::max(player.GetMaximumAttributeValue(CharacterAttribute::Strength), player._pStrength);
 	int dexterity = std::max(player.GetMaximumAttributeValue(CharacterAttribute::Dexterity), player._pDexterity);

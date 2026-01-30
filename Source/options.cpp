@@ -1733,6 +1733,7 @@ HackOptions::HackOptions()
 	, goldMultiplier("Gold Drop Multiplier", OptionEntryFlags::None, N_("Gold Drop Multiplier"), "Multiplier for gold drops (1 = normal, 2 = double, 10 = 10x, etc.)", 1, { 1, 2, 5, 10, 20, 50, 100 })
 	, maxGoldPerSlot("Maximum Gold per Inventory Slot", OptionEntryFlags::None, N_("Max Gold per Inventory Slot"), "This value is currently hard-coded to 500.000 and cannot be changed", 500000)
 	, maximizeRandomItemValues("Maximize Random Item Values", OptionEntryFlags::None, N_("Maximize Random Item Values"), "Maximize the random values on items", true)
+	, preventMonsterEscape("Prevent Monsters from escaping", OptionEntryFlags::None, N_("Prevent Monsters from escaping"), "Prevent monsters from trying to escape", true)
 	, spawnInTownCenter("Spawn in Town Center", OptionEntryFlags::None, N_("Spawn in Town Center"), "Spawn the player in the center of town", true)
 	, moveTownersToCenter("Move Towners to Center", OptionEntryFlags::None, N_("Move Towners to Center"), "Move Adria and Wirt to the center of town", true)
 	, griswoldUnlimitedItemLevel("Griswold Unlimited Item Level", OptionEntryFlags::None, N_("Griswold Unlimited Item Level"), "Allow Griswold to sell items above his regular maximum item level of 30", true)
@@ -1740,8 +1741,8 @@ HackOptions::HackOptions()
 	, griswoldNumberOfItems("Griswold Number of Items", OptionEntryFlags::None, N_("Griswold Number of Items"), "Set the number of premium items that Griswold sells", 50, { 6, 16, 25, 50, 100, 200 })
 	, griswoldItemType("Griswold Item Type", OptionEntryFlags::None, N_("Griswold Item Type"), N_("Try to generate Griswold items of this specific type only"))
 	, griswoldItemLevel("Griswold Item Level", OptionEntryFlags::None, N_("Griswold Item Level"), "Set the level of items that Griswold sells, 0 = disabled", 0, { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60 })
-	, griswoldItemMinValue("Griswold Item Min Gold Value", OptionEntryFlags::None, N_("Griswold Item Min Gold Value"), "Set the minimum gold value of items that Griswold sells, 0 = disabled (need to set this directly in diablo.ini)", 0)
-	, griswoldItemMaxValue("Griswold Item Max Gold Value", OptionEntryFlags::None, N_("Griswold Item Max Gold Value"), "Set the maximum gold value of items that Griswold sells, 0 = disabled (need to set this directly in diablo.ini)", 0)
+	, griswoldItemValueMin("Griswold Item Min Gold Value", OptionEntryFlags::None, N_("Griswold Item Min Gold Value"), "Set the minimum gold value of items that Griswold sells, 0 = disabled (need to set this directly in diablo.ini)", 0)
+	, griswoldItemValueMax("Griswold Item Max Gold Value", OptionEntryFlags::None, N_("Griswold Item Max Gold Value"), "Set the maximum gold value of items that Griswold sells, 0 = disabled (need to set this directly in diablo.ini)", 0)
 {
 }
 std::vector<OptionEntryBase *> HackOptions::GetEntries()
@@ -1751,6 +1752,7 @@ std::vector<OptionEntryBase *> HackOptions::GetEntries()
 		&goldMultiplier,
 		&maxGoldPerSlot,
 		&maximizeRandomItemValues,
+		&preventMonsterEscape,
 		&spawnInTownCenter,
 		&moveTownersToCenter,
 		&griswoldUnlimitedItemLevel,
@@ -1758,8 +1760,8 @@ std::vector<OptionEntryBase *> HackOptions::GetEntries()
 		&griswoldNumberOfItems,
 		&griswoldItemType,
 		&griswoldItemLevel,
-		&griswoldItemMinValue,
-		&griswoldItemMaxValue,
+		&griswoldItemValueMin,
+		&griswoldItemValueMax,
 	};
 }
 

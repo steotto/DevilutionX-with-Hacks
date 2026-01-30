@@ -898,6 +898,8 @@ struct HackOptions : OptionCategoryBase {
 
 	OptionEntryBoolean maximizeRandomItemValues;
 
+	OptionEntryBoolean preventMonsterEscape;
+
 	OptionEntryBoolean spawnInTownCenter;
 	OptionEntryBoolean moveTownersToCenter;
 
@@ -906,8 +908,8 @@ struct HackOptions : OptionCategoryBase {
 	OptionEntryInt<std::uint32_t> griswoldNumberOfItems;
 	OptionEntryGriswoldItemType griswoldItemType;
 	OptionEntryInt<std::uint32_t> griswoldItemLevel;
-	OptionEntryInt<std::uint32_t> griswoldItemMinValue;
-	OptionEntryInt<std::uint32_t> griswoldItemMaxValue;
+	OptionEntryInt<std::uint32_t> griswoldItemValueMin;
+	OptionEntryInt<std::uint32_t> griswoldItemValueMax;
 };
 
 struct Options {
