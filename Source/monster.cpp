@@ -1012,9 +1012,10 @@ void StartDeathFromMonster(Monster &attacker, Monster &target)
 
 void StartFadein(Monster &monster, Direction md, bool backwards)
 {
-	if (*GetOptions().Hacks.preventMonsterEscape) {
-		return;
-	}
+	// TODO is this needed?
+	// if (*GetOptions().Hacks.preventMonsterEscape) {
+	// 	return;
+	// }
 
 	NewMonsterAnim(monster, MonsterGraphic::Special, md);
 	monster.mode = MonsterMode::FadeIn;
@@ -2669,7 +2670,7 @@ void CounselorAi(Monster &monster)
 	const int v = GenerateRnd(100);
 	const unsigned distanceToEnemy = monster.distanceToEnemy();
 	if (monster.goal == MonsterGoal::Retreat) {
-		if (monster.goalVar1++ <= 3)
+		if (monster.goalVar1++ <= 3 && *GetOptions().Hacks.preventMonsterEscape == 0)
 			RandomWalk(monster, Opposite(md));
 		else {
 			monster.goal = MonsterGoal::Normal;
@@ -2677,7 +2678,7 @@ void CounselorAi(Monster &monster)
 		}
 	} else if (monster.goal == MonsterGoal::Move) {
 		if (distanceToEnemy >= 2 && monster.activeForTicks == UINT8_MAX && dTransVal[monster.position.tile.x][monster.position.tile.y] == dTransVal[monster.enemyPosition.x][monster.enemyPosition.y]) {
-			if (monster.goalVar1++ < static_cast<int>(2 * distanceToEnemy) || !DirOK(monster, md)) {
+			if ((monster.goalVar1++ < static_cast<int>(2 * distanceToEnemy) || !DirOK(monster, md)) && *GetOptions().Hacks.preventMonsterEscape == 0) {
 				RoundWalk(monster, md, &monster.goalVar2);
 			} else {
 				monster.goal = MonsterGoal::Normal;
