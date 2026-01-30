@@ -1730,10 +1730,11 @@ void OptionEntryGriswoldItemType::SetActiveListIndex(size_t index)
 HackOptions::HackOptions()
     : OptionCategoryBase("Hacks", N_("Hacks"), N_("Hack Settings"))
 	, expMultiplier("Experience Multiplier", OptionEntryFlags::None, N_("Experience Multiplier"), "Multiplier for experience gain (1 = normal, 2 = double, 10 = 10x, etc.)", 1, { 1, 2, 5, 10, 20, 50, 100 })
-	, goldMultiplier("Gold Drop Multiplier", OptionEntryFlags::None, N_("Gold Drop Multiplier"), "Multiplier for gold drops (1 = normal, 2 = double, 10 = 10x, etc.)", 1, { 1, 2, 5, 10, 20, 50, 100 })
+	, goldMultiplier("Gold Multiplier", OptionEntryFlags::None, N_("Gold Multiplier"), "Multiplier for gold drops and the selling price of items at vendors (1 = normal, 2 = double, 10 = 10x, etc.)", 1, { 1, 2, 5, 10, 20, 50, 100 })
 	, maxGoldPerSlot("Maximum Gold per Inventory Slot", OptionEntryFlags::None, N_("Max Gold per Inventory Slot"), "This value is currently hard-coded to 500.000 and cannot be changed", 500000)
 	, maximizeRandomItemValues("Maximize Random Item Values", OptionEntryFlags::None, N_("Maximize Random Item Values"), "Maximize the random values on items", true)
 	, preventMonsterEscape("Prevent Monsters from escaping", OptionEntryFlags::None, N_("Prevent Monsters from escaping"), "Prevent ranged monsters from trying to escape", true)
+	, maxPlayerResistance("Maximum Player Resistances", OptionEntryFlags::None, N_("Maximum Player Resistances"), "Maximum percentage of player resistances (Magic, Fire, Lightning)", 75, { 0, 25, 50, 75, 80, 85, 90, 95 })
 	, spawnInTownCenter("Spawn in Town Center", OptionEntryFlags::None, N_("Spawn in Town Center"), "Spawn the player in the center of town", true)
 	, moveTownersToCenter("Move Towners to Center", OptionEntryFlags::None, N_("Move Towners to Center"), "Move Adria and Wirt to the center of town", true)
 	, griswoldUnlimitedItemLevel("Griswold Unlimited Item Level", OptionEntryFlags::None, N_("Griswold Unlimited Item Level"), "Allow Griswold to sell items above his regular maximum item level of 30", true)
@@ -1753,6 +1754,7 @@ std::vector<OptionEntryBase *> HackOptions::GetEntries()
 		&maxGoldPerSlot,
 		&maximizeRandomItemValues,
 		&preventMonsterEscape,
+		&maxPlayerResistance,
 		&spawnInTownCenter,
 		&moveTownersToCenter,
 		&griswoldUnlimitedItemLevel,

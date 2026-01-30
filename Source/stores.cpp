@@ -529,7 +529,7 @@ void StartSmithSell()
 			if (PlayerItems[CurrentItemIndex]._iMagical != ITEM_QUALITY_NORMAL && PlayerItems[CurrentItemIndex]._iIdentified)
 				PlayerItems[CurrentItemIndex]._ivalue = PlayerItems[CurrentItemIndex]._iIvalue;
 
-			PlayerItems[CurrentItemIndex]._ivalue = std::max(PlayerItems[CurrentItemIndex]._ivalue / 4, 1);
+			PlayerItems[CurrentItemIndex]._ivalue = std::max(PlayerItems[CurrentItemIndex]._ivalue / 4 * *GetOptions().Hacks.goldMultiplier, 1u);
 			PlayerItems[CurrentItemIndex]._iIvalue = PlayerItems[CurrentItemIndex]._ivalue;
 			PlayerItemIndexes[CurrentItemIndex] = i;
 			CurrentItemIndex++;
@@ -760,7 +760,7 @@ void StartWitchSell()
 			if (PlayerItems[CurrentItemIndex]._iMagical != ITEM_QUALITY_NORMAL && PlayerItems[CurrentItemIndex]._iIdentified)
 				PlayerItems[CurrentItemIndex]._ivalue = PlayerItems[CurrentItemIndex]._iIvalue;
 
-			PlayerItems[CurrentItemIndex]._ivalue = std::max(PlayerItems[CurrentItemIndex]._ivalue / 4, 1);
+			PlayerItems[CurrentItemIndex]._ivalue = std::max(PlayerItems[CurrentItemIndex]._ivalue / 4 * *GetOptions().Hacks.goldMultiplier, 1u);
 			PlayerItems[CurrentItemIndex]._iIvalue = PlayerItems[CurrentItemIndex]._ivalue;
 			PlayerItemIndexes[CurrentItemIndex] = i;
 			CurrentItemIndex++;

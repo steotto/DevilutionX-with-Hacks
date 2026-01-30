@@ -900,6 +900,8 @@ struct HackOptions : OptionCategoryBase {
 
 	OptionEntryBoolean preventMonsterEscape;
 
+	OptionEntryInt<std::uint32_t> maxPlayerResistance;
+
 	OptionEntryBoolean spawnInTownCenter;
 	OptionEntryBoolean moveTownersToCenter;
 

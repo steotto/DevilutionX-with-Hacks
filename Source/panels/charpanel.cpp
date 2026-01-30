@@ -13,6 +13,7 @@
 #include "engine/load_clx.hpp"
 #include "engine/render/clx_render.hpp"
 #include "engine/render/text_render.hpp"
+#include "options.h"
 #include "panels/ui_panels.hpp"
 #include "player.h"
 #include "tables/playerdat.hpp"
@@ -107,7 +108,7 @@ StyledText GetResistInfo(int8_t resist)
 		style = UiFlags::ColorWhite;
 	else if (resist < 0)
 		style = UiFlags::ColorRed;
-	else if (resist >= MaxResistance)
+	else if (resist >= *GetOptions().Hacks.maxPlayerResistance)
 		style = UiFlags::ColorWhitegold;
 
 	return { style, StrCat(resist, "%") };

@@ -2684,9 +2684,10 @@ void CalcPlrResistances(Player &player, ItemSpecialEffect iflgs, int fire, int l
 		lightning = 0;
 	}
 
-	player._pMagResist = std::clamp(magic, 0, MaxResistance);
-	player._pFireResist = std::clamp(fire, 0, MaxResistance);
-	player._pLghtResist = std::clamp(lightning, 0, MaxResistance);
+	const int maxPlayerResistance = *GetOptions().Hacks.maxPlayerResistance;
+	player._pMagResist = std::clamp(magic, 0, maxPlayerResistance);
+	player._pFireResist = std::clamp(fire, 0, maxPlayerResistance);
+	player._pLghtResist = std::clamp(lightning, 0, maxPlayerResistance);
 }
 
 void CalcPlrLifeMana(Player &player, int vitality, int magic, int life, int mana)
@@ -3935,6 +3936,8 @@ bool DoOil(Player &player, int cii)
 
 [[nodiscard]] StringOrView PrintItemPower(char plidx, const Item &item)
 {
+	const int maxPlayerResistance = *GetOptions().Hacks.maxPlayerResistance;
+
 	switch (plidx) {
 	case IPL_TOHIT:
 	case IPL_TOHIT_CURSE:
@@ -3953,27 +3956,27 @@ bool DoOil(Player &player, int cii)
 		return fmt::format(fmt::runtime(_("armor class: {:d}")), item._iAC);
 	case IPL_FIRERES:
 	case IPL_FIRERES_CURSE:
-		if (item._iPLFR < MaxResistance)
+		if (item._iPLFR < maxPlayerResistance)
 			return fmt::format(fmt::runtime(_("Resist Fire: {:+d}%")), item._iPLFR);
 		else
-			return fmt::format(fmt::runtime(_("Resist Fire: {:+d}% MAX")), MaxResistance);
+			return fmt::format(fmt::runtime(_("Resist Fire: {:+d}% MAX")), maxPlayerResistance);
 	case IPL_LIGHTRES:
 	case IPL_LIGHTRES_CURSE:
-		if (item._iPLLR < MaxResistance)
+		if (item._iPLLR < maxPlayerResistance)
 			return fmt::format(fmt::runtime(_("Resist Lightning: {:+d}%")), item._iPLLR);
 		else
-			return fmt::format(fmt::runtime(_("Resist Lightning: {:+d}% MAX")), MaxResistance);
+			return fmt::format(fmt::runtime(_("Resist Lightning: {:+d}% MAX")), maxPlayerResistance);
 	case IPL_MAGICRES:
 	case IPL_MAGICRES_CURSE:
-		if (item._iPLMR < MaxResistance)
+		if (item._iPLMR < maxPlayerResistance)
 			return fmt::format(fmt::runtime(_("Resist Magic: {:+d}%")), item._iPLMR);
 		else
-			return fmt::format(fmt::runtime(_("Resist Magic: {:+d}% MAX")), MaxResistance);
+			return fmt::format(fmt::runtime(_("Resist Magic: {:+d}% MAX")), maxPlayerResistance);
 	case IPL_ALLRES:
-		if (item._iPLFR < MaxResistance)
+		if (item._iPLFR < maxPlayerResistance)
 			return fmt::format(fmt::runtime(_("Resist All: {:+d}%")), item._iPLFR);
 		else
-			return fmt::format(fmt::runtime(_("Resist All: {:+d}% MAX")), MaxResistance);
+			return fmt::format(fmt::runtime(_("Resist All: {:+d}% MAX")), maxPlayerResistance);
 	case IPL_SPLLVLADD:
 		if (item._iSplLvlAdd > 0)
 			return fmt::format(fmt::runtime(ngettext("spells are increased {:d} level", "spells are increased {:d} levels", item._iSplLvlAdd)), item._iSplLvlAdd);
