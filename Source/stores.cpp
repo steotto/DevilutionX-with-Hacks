@@ -2067,13 +2067,14 @@ void SetupTownStores()
 	const Player &myPlayer = *MyPlayer;
 
 	int l = myPlayer.getCharacterLevel() / 2;
-	if (!gbIsMultiplayer) {
-		l = 0;
-		for (int i = 0; i < NUMLEVELS; i++) {
-			if (myPlayer._pLvlVisited[i])
-				l = i;
-		}
-	}
+	// don't account for highest visited dungeon level in single player, because it resets when starting a new game
+	// if (!gbIsMultiplayer) {
+	// 	l = 0;
+	// 	for (int i = 0; i < NUMLEVELS; i++) {
+	// 		if (myPlayer._pLvlVisited[i])
+	// 			l = i;
+	// 	}
+	// }
 
 	l = std::clamp(l + 2, 6, 16);
 	SpawnSmith(l);

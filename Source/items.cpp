@@ -4475,9 +4475,14 @@ void SpawnSmith(int lvl)
 	SortVendor(SmithItems, PinnedItemCount);
 }
 
+int GetRandomizedPremiumItemLevel(int baseLevel)
+{
+	return baseLevel + RandomIntBetween(-1, 3);
+}
+
 void ReplacePremium(const Player &player, int idx)
 {
-	int plvl = player.getCharacterLevel();
+	int plvl = GetRandomizedPremiumItemLevel(player.getCharacterLevel());
 	SpawnOnePremium(PremiumItems[idx], plvl, player);
 }
 
@@ -4487,14 +4492,16 @@ void SpawnPremium(const Player &player)
 	const size_t maxItems = *GetOptions().Hacks.griswoldNumberOfItems;
 
 	while (PremiumItems.size() < maxItems) {
-		int plvl = player.getCharacterLevel();
+		int plvl = GetRandomizedPremiumItemLevel(player.getCharacterLevel());
 		Item item = {};
 		SpawnOnePremium(item, plvl, player);
 		PremiumItems.push_back(item);
 	}
 
-	// Upgrade premium items if the player's level is higher than the current premium item level (which gets persisted in save files).
+	// Upgrade premium items if the player's level is higher than the current premium item level.
 	// The upgrade rotates through thirds each level-up: positions 1/4/7…, then 2/5/8…, then 3/6/9…, then repeats.
+	// TODO I guess the idea is to show new items when you level up in a game and then visit the vendor.
+	// TODO However, when you load a game from menu or create a new game with a character above level 1, this still runs and will overwrite already generated items, because PremiumItemLevel starts at 1.
 	while (PremiumItemLevel < lvl) {
 		PremiumItemLevel++;
 		const size_t count = PremiumItems.size();
@@ -4503,7 +4510,7 @@ void SpawnPremium(const Player &player)
 
 		const size_t offset = static_cast<size_t>((PremiumItemLevel + 1) % 3);
 		for (size_t i = offset; i < count; i += 3) {
-			SpawnOnePremium(PremiumItems[i], PremiumItemLevel, player);
+			SpawnOnePremium(PremiumItems[i], GetRandomizedPremiumItemLevel(PremiumItemLevel), player);
 		}
 	}
 }
