@@ -502,6 +502,23 @@ bool IsStandingGround()
 	return false;
 }
 
+Point GetStandGroundAttackTarget(const Player &player)
+{
+	Direction pdir = player._pdir;
+	const AxisDirection moveDir = GetMoveDirection();
+	const bool motion = moveDir.x != AxisDirectionX_NONE || moveDir.y != AxisDirectionY_NONE;
+	if (motion) {
+		pdir = FaceDir[static_cast<std::size_t>(moveDir.x)][static_cast<std::size_t>(moveDir.y)];
+	}
+
+	Point position = player.position.tile + pdir;
+	if (pcursmonst != -1 && !motion) {
+		position = Monsters[pcursmonst].position.tile;
+	}
+
+	return position;
+}
+
 void Interact()
 {
 	if (leveltype == DTYPE_TOWN && pcursmonst != -1) {
@@ -512,18 +529,7 @@ void Interact()
 	const Player &myPlayer = *MyPlayer;
 
 	if (leveltype != DTYPE_TOWN && IsStandingGround()) {
-		Direction pdir = myPlayer._pdir;
-		const AxisDirection moveDir = GetMoveDirection();
-		const bool motion = moveDir.x != AxisDirectionX_NONE || moveDir.y != AxisDirectionY_NONE;
-		if (motion) {
-			pdir = FaceDir[static_cast<std::size_t>(moveDir.x)][static_cast<std::size_t>(moveDir.y)];
-		}
-
-		Point position = myPlayer.position.tile + pdir;
-		if (pcursmonst != -1 && !motion) {
-			position = Monsters[pcursmonst].position.tile;
-		}
-
+		const Point position = GetStandGroundAttackTarget(myPlayer);
 		NetSendCmdLoc(MyPlayerId, true, myPlayer.UsesRangedWeapon() ? CMD_RATTACKXY : CMD_SATTACKXY, position);
 		LastPlayerAction = PlayerActionType::Attack;
 		return;
@@ -1978,18 +1984,7 @@ void plrctrls_after_check_curs_move()
 	    && IsStandingGround()
 	    && leveltype != DTYPE_TOWN)
 	{
-		Direction pdir = MyPlayer->_pdir;
-		const AxisDirection moveDir = GetMoveDirection();
-		const bool motion = moveDir.x != AxisDirectionX_NONE || moveDir.y != AxisDirectionY_NONE;
-		if (motion) {
-			pdir = FaceDir[static_cast<std::size_t>(moveDir.x)][static_cast<std::size_t>(moveDir.y)];
-		}
-
-		Point position = MyPlayer->position.tile + pdir;
-		if (pcursmonst != -1 && !motion) {
-			position = Monsters[pcursmonst].position.tile;
-		}
-		cursPosition = position;
+		cursPosition = GetStandGroundAttackTarget(*MyPlayer);
 	}
 }
 
