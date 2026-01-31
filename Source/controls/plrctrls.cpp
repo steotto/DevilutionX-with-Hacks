@@ -1971,6 +1971,26 @@ void plrctrls_after_check_curs_move()
 		FindItemOrObject();
 		FindTrigger();
 	}
+
+	// Maintain cursPosition while using stand ground so repeat attacks are possible and have a valid target.
+	if (ControllerActionHeld != GameActionType_NONE
+	    && LastPlayerAction == PlayerActionType::Attack
+	    && IsStandingGround()
+	    && leveltype != DTYPE_TOWN)
+	{
+		Direction pdir = MyPlayer->_pdir;
+		const AxisDirection moveDir = GetMoveDirection();
+		const bool motion = moveDir.x != AxisDirectionX_NONE || moveDir.y != AxisDirectionY_NONE;
+		if (motion) {
+			pdir = FaceDir[static_cast<std::size_t>(moveDir.x)][static_cast<std::size_t>(moveDir.y)];
+		}
+
+		Point position = MyPlayer->position.tile + pdir;
+		if (pcursmonst != -1 && !motion) {
+			position = Monsters[pcursmonst].position.tile;
+		}
+		cursPosition = position;
+	}
 }
 
 void plrctrls_every_frame()
