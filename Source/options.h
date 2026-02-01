@@ -92,6 +92,8 @@ enum class Resampler : uint8_t {
 std::string_view ResamplerToString(Resampler resampler);
 std::optional<Resampler> ResamplerFromString(std::string_view resampler);
 
+enum class AutomapType : uint8_t;
+
 enum class OptionEntryType : uint8_t {
 	Boolean,
 	List,
@@ -640,6 +642,13 @@ struct GameplayOptions : OptionCategoryBase {
 	 * Advanced option, not displayed in the UI.
 	 */
 	OptionEntryInt<int> skipLoadingScreenThresholdMs;
+
+	/**
+	 * @brief Automap display type.
+	 * 
+	 * Not displayed in the UI.
+	 */
+	AutomapType automapType;
 };
 
 struct ControllerOptions : OptionCategoryBase {

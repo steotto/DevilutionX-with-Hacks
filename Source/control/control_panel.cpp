@@ -6,6 +6,7 @@
 #include "automap.h"
 #include "controls/control_mode.hpp"
 #include "controls/modifier_hints.h"
+#include "engine/demomode.h"
 #include "diablo_msg.hpp"
 #include "engine/backbuffer_state.hpp"
 #include "engine/load_cel.hpp"
@@ -533,6 +534,10 @@ void CycleAutomapType()
 	const AutomapType newType { static_cast<std::underlying_type_t<AutomapType>>(
 		(static_cast<unsigned>(GetAutomapType()) + 1) % enum_size<AutomapType>::value) };
 	SetAutomapType(newType);
+	GetOptions().Gameplay.automapType = newType;
+	if (!demo::IsRunning()) {
+		SaveOptions();
+	}
 	if (newType == AutomapType::FIRST) {
 		AutomapActive = false;
 	}
