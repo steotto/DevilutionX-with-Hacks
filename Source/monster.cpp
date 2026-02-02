@@ -1211,7 +1211,7 @@ void MonsterAttackPlayer(Monster &monster, Player &player, int hit, int minDam, 
 		}
 		return;
 	}
-	if (monster.type().type == MT_YZOMBIE && &player == MyPlayer) {
+	if (monster.type().type == MT_YZOMBIE && &player == MyPlayer && *GetOptions().Hacks.disableBlackDeathHpPenalty == 0) {
 		if (player._pMaxHP > 64) {
 			if (player._pMaxHPBase > 64) {
 				player._pMaxHP -= 64;

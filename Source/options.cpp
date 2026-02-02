@@ -1634,117 +1634,36 @@ ModOptions::ModEntry::ModEntry(std::string_view name)
 {
 }
 
-OptionEntryGriswoldItemType::OptionEntryGriswoldItemType(std::string_view key, OptionEntryFlags flags, const char *name, const char *description)
-    : OptionEntryListBase(key, flags, name, description)
-    , itemType_(ItemType::None)
-{
-}
-
-void OptionEntryGriswoldItemType::LoadFromIni(std::string_view category)
-{
-	char buffer[32];
-	ini->getUtf8Buf(category, key, buffer, sizeof(buffer));
-	if (buffer[0] == '\0') {
-		// Empty value means "All Types"
-		itemType_ = ItemType::None;
-		return;
-	}
-
-	std::string_view bufferView(buffer);
-	// Check all possible ItemType values
-	const ItemType types[] = {
-		ItemType::Helm, ItemType::LightArmor, ItemType::MediumArmor,
-		ItemType::HeavyArmor, ItemType::Shield, ItemType::Axe,
-		ItemType::Bow, ItemType::Mace, ItemType::Sword,
-		ItemType::Staff, ItemType::Amulet, ItemType::Ring
-	};
-	for (const auto type : types) {
-		if (ItemTypeToString(type) == bufferView) {
-			itemType_ = type;
-			return;
-		}
-	}
-	// If not found, default to "All Types"
-	itemType_ = ItemType::None;
-}
-
-void OptionEntryGriswoldItemType::SaveToIni(std::string_view category) const
-{
-	if (itemType_ == ItemType::None) {
-		// Empty value represents "All Types"
-		ini->set(category, key, "");
-	} else {
-		ini->set(category, key, ItemTypeToString(itemType_));
-	}
-}
-
-void OptionEntryGriswoldItemType::CheckItemTypesAreInitialized() const
-{
-	if (!itemTypes.empty())
-		return;
-
-	itemTypes.emplace_back(ItemType::None, "All Types");
-	itemTypes.emplace_back(ItemType::LightArmor, "Light Armor");
-	itemTypes.emplace_back(ItemType::MediumArmor, "Medium Armor");
-	itemTypes.emplace_back(ItemType::HeavyArmor, "Heavy Armor");
-	itemTypes.emplace_back(ItemType::Helm, "Helm");
-	itemTypes.emplace_back(ItemType::Shield, "Shield");
-	itemTypes.emplace_back(ItemType::Amulet, "Amulet");
-	itemTypes.emplace_back(ItemType::Ring, "Ring");
-	itemTypes.emplace_back(ItemType::Axe, "Axe");
-	itemTypes.emplace_back(ItemType::Bow, "Bow");
-	itemTypes.emplace_back(ItemType::Mace, "Mace");
-	itemTypes.emplace_back(ItemType::Sword, "Sword");
-	itemTypes.emplace_back(ItemType::Staff, "Staff");
-}
-
-size_t OptionEntryGriswoldItemType::GetListSize() const
-{
-	CheckItemTypesAreInitialized();
-	return itemTypes.size();
-}
-
-std::string_view OptionEntryGriswoldItemType::GetListDescription(size_t index) const
-{
-	CheckItemTypesAreInitialized();
-	if (index >= itemTypes.size())
-		return "";
-	return itemTypes[index].second;
-}
-
-size_t OptionEntryGriswoldItemType::GetActiveListIndex() const
-{
-	CheckItemTypesAreInitialized();
-	for (size_t i = 0; i < itemTypes.size(); ++i) {
-		if (itemTypes[i].first == itemType_)
-			return i;
-	}
-	return 0;
-}
-
-void OptionEntryGriswoldItemType::SetActiveListIndex(size_t index)
-{
-	CheckItemTypesAreInitialized();
-	if (index < itemTypes.size()) {
-		itemType_ = itemTypes[index].first;
-		NotifyValueChanged();
-	}
-}
-
 HackOptions::HackOptions()
     : OptionCategoryBase("Hacks", N_("Hacks"), N_("Hack Settings"))
 	, expMultiplier("Experience Multiplier", OptionEntryFlags::None, N_("Experience Multiplier"), "Multiplier for experience gain (1 = normal, 2 = double, 10 = 10x, etc.)", 1, { 1, 2, 5, 10, 20, 50, 100 })
 	, goldMultiplier("Gold Multiplier", OptionEntryFlags::None, N_("Gold Multiplier"), "Multiplier for gold drops and the selling price of items at vendors (1 = normal, 2 = double, 10 = 10x, etc.)", 1, { 1, 2, 5, 10, 20, 50, 100 })
 	, maxGoldPerSlot("Maximum Gold per Inventory Slot", OptionEntryFlags::None, N_("Max Gold per Inventory Slot"), "This value is currently hard-coded to 500.000 and cannot be changed", 500000)
 	, maximizeRandomItemValues("Maximize Random Item Values", OptionEntryFlags::None, N_("Maximize Random Item Values"), "Maximize the random values on items", true)
-	, preventMonsterEscape("Prevent Monsters from escaping", OptionEntryFlags::None, N_("Prevent Monsters from escaping"), "Prevent ranged monsters from trying to escape", true)
 	, maxPlayerResistance("Maximum Player Resistances", OptionEntryFlags::None, N_("Maximum Player Resistances"), "Maximum possible percentage of player resistances (Magic, Fire, Lightning)", 75, { 0, 25, 50, 75, 80, 85, 90, 95 })
+	, preventMonsterEscape("Prevent Monsters from escaping", OptionEntryFlags::None, N_("Prevent Monsters from escaping"), "Prevent ranged monsters from trying to escape", true)
+	, disableBlackDeathHpPenalty("Disable Black Death HP Penalty", OptionEntryFlags::None, N_("Disable Black Death HP Penalty"), "Prevent Black Death Zombies from permanently reducing maximum HP", true)
 	, spawnInTownCenter("Spawn in Town Center", OptionEntryFlags::None, N_("Spawn in Town Center"), "Spawn the player in the center of town", true)
 	, moveTownersToCenter("Move Towners to Center", OptionEntryFlags::None, N_("Move Towners to Center"), "Move Adria and Wirt to the center of town", true)
 	, griswoldUnlimitedItemLevel("Griswold Unlimited Item Level", OptionEntryFlags::None, N_("Griswold Unlimited Item Level"), "Allow Griswold to sell items above his regular maximum item level of 30", true)
 	, griswoldUnlimitedItemValue("Griswold Unlimited Item Value", OptionEntryFlags::None, N_("Griswold Unlimited Item Value"), "Allow Griswold to sell items above his maximum gold value", true)
 	, griswoldNumberOfItems("Griswold Number of Items", OptionEntryFlags::None, N_("Griswold Number of Items"), "Set the number of premium items that Griswold sells", 50, { 6, 16, 25, 50, 100, 200 })
-	, griswoldItemType("Griswold Item Type", OptionEntryFlags::None, N_("Griswold Item Type"), N_("Try to generate Griswold items of this specific type only"))
+	, griswoldItemType("Griswold Item Type", OptionEntryFlags::None, N_("Griswold Item Type"), N_("Try to generate Griswold items of this specific type only"), ItemType::None,
+	      {
+	          { ItemType::None, "All Types" },
+	          { ItemType::LightArmor, "Light Armor" },
+	          { ItemType::MediumArmor, "Medium Armor" },
+	          { ItemType::HeavyArmor, "Heavy Armor" },
+	          { ItemType::Helm, "Helm" },
+	          { ItemType::Shield, "Shield" },
+	          { ItemType::Amulet, "Amulet" },
+	          { ItemType::Ring, "Ring" },
+	          { ItemType::Axe, "Axe" },
+	          { ItemType::Bow, "Bow" },
+	          { ItemType::Mace, "Mace" },
+	          { ItemType::Sword, "Sword" },
+	          { ItemType::Staff, "Staff" },
+	      })
 	, griswoldFixedItemLevel("Griswold Fixed Item Level", OptionEntryFlags::None, N_("Griswold Fixed Item Level"), "Set a fixed level for all items that Griswold sells, 0 = disabled", 0, { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60 })
 	, griswoldItemValueMin("Griswold Item Min Gold Value", OptionEntryFlags::None, N_("Griswold Item Min Gold Value"), "Set the minimum gold value of items that Griswold sells, 0 = disabled (need to set this directly in diablo.ini)", 0)
 	, griswoldItemValueMax("Griswold Item Max Gold Value", OptionEntryFlags::None, N_("Griswold Item Max Gold Value"), "Set the maximum gold value of items that Griswold sells, 0 = disabled (need to set this directly in diablo.ini)", 0)
@@ -1757,8 +1676,9 @@ std::vector<OptionEntryBase *> HackOptions::GetEntries()
 		&goldMultiplier,
 		&maxGoldPerSlot,
 		&maximizeRandomItemValues,
-		&preventMonsterEscape,
 		&maxPlayerResistance,
+		&preventMonsterEscape,
+		&disableBlackDeathHpPenalty,
 		&spawnInTownCenter,
 		&moveTownersToCenter,
 		&griswoldUnlimitedItemLevel,

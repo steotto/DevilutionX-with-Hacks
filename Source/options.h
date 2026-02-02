@@ -875,37 +875,7 @@ private:
 	std::optional<std::forward_list<ModEntry>> modEntries;
 };
 
-class OptionEntryGriswoldItemType : public OptionEntryListBase {
-public:
-	OptionEntryGriswoldItemType(std::string_view key, OptionEntryFlags flags, const char *name, const char *description);
 
-	void LoadFromIni(std::string_view category) override;
-	void SaveToIni(std::string_view category) const override;
-
-	[[nodiscard]] size_t GetListSize() const override;
-	[[nodiscard]] std::string_view GetListDescription(size_t index) const override;
-	[[nodiscard]] size_t GetActiveListIndex() const override;
-	void SetActiveListIndex(size_t index) override;
-
-	ItemType operator*() const
-	{
-		return itemType_;
-	}
-
-	void SetValue(int value)
-	{
-		if (value >= static_cast<int>(ItemType::Sword) && value <= static_cast<int>(ItemType::Amulet)) {
-			itemType_ = static_cast<ItemType>(value);
-			NotifyValueChanged();
-		}
-	}
-
-private:
-	ItemType itemType_;
-	mutable std::vector<std::pair<ItemType, std::string>> itemTypes;
-
-	void CheckItemTypesAreInitialized() const;
-};
 
 struct HackOptions : OptionCategoryBase {
 	HackOptions();
@@ -919,9 +889,10 @@ struct HackOptions : OptionCategoryBase {
 
 	OptionEntryBoolean maximizeRandomItemValues;
 
-	OptionEntryBoolean preventMonsterEscape;
-
 	OptionEntryInt<std::uint32_t> maxPlayerResistance;
+
+	OptionEntryBoolean preventMonsterEscape;
+	OptionEntryBoolean disableBlackDeathHpPenalty;
 
 	OptionEntryBoolean spawnInTownCenter;
 	OptionEntryBoolean moveTownersToCenter;
@@ -929,7 +900,7 @@ struct HackOptions : OptionCategoryBase {
 	OptionEntryBoolean griswoldUnlimitedItemLevel;
 	OptionEntryBoolean griswoldUnlimitedItemValue;
 	OptionEntryInt<std::uint32_t> griswoldNumberOfItems;
-	OptionEntryGriswoldItemType griswoldItemType;
+	OptionEntryEnum<ItemType> griswoldItemType;
 	OptionEntryInt<std::uint32_t> griswoldFixedItemLevel;
 	OptionEntryInt<std::uint32_t> griswoldItemValueMin;
 	OptionEntryInt<std::uint32_t> griswoldItemValueMax;
