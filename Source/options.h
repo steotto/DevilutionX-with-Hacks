@@ -24,6 +24,7 @@
 
 #include <ankerl/unordered_dense.h>
 #include <function_ref.hpp>
+#include <magic_enum/magic_enum.hpp>
 
 #include "appfat.h"
 #include "controls/controller_buttons.h"
@@ -239,6 +240,17 @@ public:
 			AddEntry(static_cast<int>(entryValue), entryName);
 		}
 	}
+	
+	// Constructor that uses magic_enum to automatically generate entries
+	OptionEntryEnum(std::string_view key, OptionEntryFlags flags, const char *name, const char *description, T defaultValue)
+	    : OptionEntryEnumBase(key, flags, name, description, static_cast<int>(defaultValue))
+	{
+		constexpr auto values = magic_enum::enum_values<T>();
+		for (T value : values) {
+			AddEntry(static_cast<int>(value), magic_enum::enum_name(value));
+		}
+	}
+	
 	[[nodiscard]] T operator*() const
 	{
 		return static_cast<T>(GetValueInternal());
@@ -648,7 +660,7 @@ struct GameplayOptions : OptionCategoryBase {
 	 * 
 	 * Not displayed in the UI.
 	 */
-	AutomapType automapType;
+	OptionEntryEnum<AutomapType> automapType;
 };
 
 struct ControllerOptions : OptionCategoryBase {

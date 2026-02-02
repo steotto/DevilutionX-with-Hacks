@@ -1576,7 +1576,7 @@ void InitAutomapOnce()
 		MinimapScale = scale * factor;
 	}
 
-	CurrentAutomapType = GetOptions().Gameplay.automapType;
+	CurrentAutomapType = *GetOptions().Gameplay.automapType;
 }
 
 void InitAutomap()

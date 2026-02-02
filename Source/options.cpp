@@ -250,8 +250,6 @@ void LoadOptions()
 #ifdef __vita__
 	options.Controller.bRearTouch = ini->getBool("Controller", "Enable Rear Touchpad", true);
 #endif
-
-	options.Gameplay.automapType = magic_enum::enum_cast<AutomapType>(ini->getString("Game", "Automap Type", "Opaque")).value_or(AutomapType::Opaque);
 }
 
 void SaveOptions()
@@ -278,8 +276,6 @@ void SaveOptions()
 #ifdef __vita__
 	ini->set("Controller", "Enable Rear Touchpad", options.Controller.bRearTouch);
 #endif
-
-	ini->set("Game", "Automap Type", magic_enum::enum_name(options.Gameplay.automapType));
 
 	SaveIni();
 }
@@ -876,7 +872,7 @@ GameplayOptions::GameplayOptions()
     , numRejuPotionPickup("Rejuvenation Potion Pickup", OptionEntryFlags::None, N_("Rejuvenation Potion Pickup"), N_("Number of Rejuvenation potions to pick up automatically."), 0, { 0, 1, 2, 4, 8, 16 })
     , numFullRejuPotionPickup("Full Rejuvenation Potion Pickup", OptionEntryFlags::None, N_("Full Rejuvenation Potion Pickup"), N_("Number of Full Rejuvenation potions to pick up automatically."), 0, { 0, 1, 2, 4, 8, 16 })
     , skipLoadingScreenThresholdMs("Skip loading screen threshold, ms", OptionEntryFlags::Invisible, "", "", 0)
-	, automapType(AutomapType::Opaque)
+    , automapType("Automap Type", OptionEntryFlags::Invisible, "", "", AutomapType::Opaque)
 {
 }
 
@@ -922,6 +918,7 @@ std::vector<OptionEntryBase *> GameplayOptions::GetEntries()
 		&grabInput,
 		&pauseOnFocusLoss,
 		&skipLoadingScreenThresholdMs,
+		&automapType,
 	};
 }
 
