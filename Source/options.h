@@ -27,6 +27,7 @@
 #include <magic_enum/magic_enum.hpp>
 
 #include "appfat.h"
+#include "automap.h"
 #include "controls/controller_buttons.h"
 #include "engine/size.hpp"
 #include "engine/sound_defs.hpp"
@@ -92,8 +93,6 @@ enum class Resampler : uint8_t {
 
 std::string_view ResamplerToString(Resampler resampler);
 std::optional<Resampler> ResamplerFromString(std::string_view resampler);
-
-enum class AutomapType : uint8_t;
 
 enum class OptionEntryType : uint8_t {
 	Boolean,
